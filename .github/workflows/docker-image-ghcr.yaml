@@ -15,9 +15,6 @@ jobs:
     name: Build
     runs-on: [ ubuntu-latest ]
 
-    outputs:
-+     image_tag: ${{ steps.set-image-tag.outputs.image_tag }}
-
     permissions:
       contents: read
       packages: write
@@ -33,7 +30,7 @@ jobs:
         id: set-image-tag
         run: |
           IMAGE_TAG=$(date +'%Y%m%d%H%M%S')
-          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v3.7.0
@@ -89,8 +86,6 @@ jobs:
       packages: read
       security-events: write
     needs: build
-    env:
-      IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Run Trivy vulnerability scanner
